@@ -21,11 +21,11 @@ jobs:
   # This workflow contains a single job called "greet"
   greet:
     # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    runs-on: ${{ matrix.image }}
+    strategy:
+      matrix:
+        image: ['ubuntu-latest', 'windows-latest']
     steps:
-    # Runs a single command using the runners shell
-    - name: Send greeting
-      run: echo "Hello ${{ github.event.inputs.name }}"
-      continue-on-err: true
+    - run: echo "MY_VAR=$${{ github.event.inputs.name }}" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+      shell: pwsh
+    - run: echo Hello ${{ env.MY_VAR }}
