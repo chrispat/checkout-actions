@@ -21,11 +21,14 @@ jobs:
   # This workflow contains a single job called "greet"
   greet:
     # The type of runner that the job will run on
-    runs-on: ${{ matrix.image }}
+    runs-on: ${{ matrix.os-path.os }}
     strategy:
       matrix:
-        image: ['ubuntu-latest', 'windows-latest']
+        os-path:
+        - { os: 'ubuntu-latest', path: '/usr/share/linux' }
+        - { os: 'macos-latest', path: '/usr/share/macos' }
+        - { os: 'windows-latest', path: 'C:\windows' }
     steps:
     - run: echo "MY_VAR=${{ github.event.inputs.name }}" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
       shell: pwsh
-    - run: echo Hello ${{ env.MY_VAR }}
+    - run: echo Hello ${{ matrix.os-path.path }}
